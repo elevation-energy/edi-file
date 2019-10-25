@@ -13,13 +13,8 @@ trait Lines
         return explode(PHP_EOL, $output);
     }
 
-    public function getLine(int $index, $print = false): ?string
+    public function getLine(int $index): ?string
     {
-        if ($print) {
-            echo $this->getLines()[$index] ?? '';
-            echo PHP_EOL;
-        }
-
         return $this->getLines()[$index] ?? null;
     }
 
