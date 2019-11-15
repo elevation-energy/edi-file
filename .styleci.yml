@@ -1,0 +1,16 @@
+preset: recommended
+disabled:
+  - hash_to_slash_comment
+  - new_with_braces
+  - alpha_ordered_imports
+enabled:
+  - length_ordered_imports
+risky: true
+finder:
+  exclude:
+    - modules
+    - node_modules
+    - storage
+    - vendor
+  name: "*.php"
+  not-name: "*.blade.php"
