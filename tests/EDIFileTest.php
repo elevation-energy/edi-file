@@ -7,7 +7,7 @@ use Elevation\EDIFile\EDIFile;
 class EDIFileTest extends TestCase
 {
     /** @test */
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $params = [
             'auth_info_qualifier'                => '',
@@ -34,7 +34,7 @@ class EDIFileTest extends TestCase
 
     private function getContent()
     {
-        $content = <<<X12
+        $content = <<<'X12'
 ISA*00*          *00*          *01*555058655      *01*116777110      *190423*0000*U*00401*001219885*0*P*^~
 GS*GE*555058655*116777110*20190423*0000*1219885*X*004010~
 ST*814*0001~
@@ -51,6 +51,7 @@ SE*11*0001~
 GE*1*1219885~
 IEA*1*001219885~
 X12;
+
         return str_replace(PHP_EOL, '', $content);
     }
 
@@ -62,14 +63,14 @@ X12;
     }
 
     /** @test */
-    function it_can_be_constructed_from_string()
+    public function it_can_be_constructed_from_string()
     {
         $ediFile = $this->beConstructedFromContent();
         $this->assertInstanceOf(EDIFile::class, $ediFile);
     }
 
     /** @test */
-    function it_returns_output_that_matches_the_input_when_constructing_from_string()
+    public function it_returns_output_that_matches_the_input_when_constructing_from_string()
     {
         $content = $this->getContent();
         $ediFile = $this->beConstructedFromContent();
@@ -78,7 +79,7 @@ X12;
     }
 
     /** @test */
-    function it_fails_to_construct_when_the_isa_header_is_missing()
+    public function it_fails_to_construct_when_the_isa_header_is_missing()
     {
         $failed = false;
         $message = 'File missing required ISA header';
@@ -94,7 +95,7 @@ X12;
     }
 
     /** @test */
-    function it_fails_to_construct_when_the_content_length_is_too_short()
+    public function it_fails_to_construct_when_the_content_length_is_too_short()
     {
         $failed = false;
         $message = 'Invalid EDI content length. Content less than 108 chars.';
@@ -110,7 +111,7 @@ X12;
     }
 
     /** @test */
-    function it_derives_the_edi_type_of_the_file_by_looking_at_the_first_transaction()
+    public function it_derives_the_edi_type_of_the_file_by_looking_at_the_first_transaction()
     {
         $edi = $this->beConstructedFromContent();
 
@@ -118,7 +119,7 @@ X12;
     }
 
     /** @test */
-    function it_returns_all_lines_of_the_file()
+    public function it_returns_all_lines_of_the_file()
     {
         $edi = $this->beConstructedFromContent();
 
@@ -126,11 +127,10 @@ X12;
     }
 
     /** @test */
-    function it_returns_a_single_line_at_index()
+    public function it_returns_a_single_line_at_index()
     {
         $edi = $this->beConstructedFromContent();
         $isa = $edi->getLine(0);
         $this->assertEquals('ISA*00*          *00*          *01*555058655      *01*116777110      *190423*0000*U*00401*001219885*0*P*^~', $isa);
     }
 }
-

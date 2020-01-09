@@ -6,7 +6,7 @@ use DateTime;
 
 class ISA
 {
-    const RECOGNIZED_CONTROL_VERSION_NUMBERS = ['00200','00300','00400','00401','00500'];
+    const RECOGNIZED_CONTROL_VERSION_NUMBERS = ['00200', '00300', '00400', '00401', '00500'];
 
     private $edi;
     private $date;
@@ -32,7 +32,7 @@ class ISA
         $this->setFields($fields);
     }
 
-    public static function make(EDIFile $edi): ISA
+    public static function make(EDIFile $edi): self
     {
         $content = $edi->getRawISA();
 
@@ -91,7 +91,7 @@ class ISA
             $this->edi->getTerm('sub_element_separator'),
         ];
 
-        return join($this->edi->getTerm('element_delimiter'), $elements).$this->edi->getTerm('segment_terminator');
+        return implode($this->edi->getTerm('element_delimiter'), $elements).$this->edi->getTerm('segment_terminator');
     }
 
     public function __toString(): string
@@ -111,7 +111,7 @@ class ISA
 
     private function mergeWithDefaults(array $fields): array
     {
-        $fields = array_filter($fields, function($field) {
+        $fields = array_filter($fields, function ($field) {
             return '' !== $field;
         });
 
@@ -120,7 +120,7 @@ class ISA
 
     private function formatFields(array $fields): array
     {
-        $fields = array_map(function($field) {
+        $fields = array_map(function ($field) {
             return is_string($field) ? trim($field) : $field;
         }, $fields);
 
@@ -153,7 +153,7 @@ class ISA
 
     private function getDefaultFields(): array
     {
-        $date = new DateTime;
+        $date = new DateTime();
 
         return [
             'auth_info_qualifier'                => '0',

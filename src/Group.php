@@ -13,6 +13,7 @@ class Group
     private $functional_id_code = '';
     private $sender_id_code = '';
     private $receiver_id_code = '';
+    private $gs_id_code;
     private $group_control_number = '';
     private $responsible_agency_code = '';
     private $version_release_identifier = '';
@@ -28,8 +29,7 @@ class Group
     {
         return (new static($edi))
             ->setContent($content)
-            ->parseContent()
-        ;
+            ->parseContent();
     }
 
     public static function fromContent(EDIFile $edi, string $content): self
@@ -39,8 +39,7 @@ class Group
 
         return (new static($edi))
             ->setContent($content)
-            ->parseContent()
-        ;
+            ->parseContent();
     }
 
     public function parseContent(): self
@@ -58,6 +57,7 @@ class Group
         $this->functional_id_code = $elements[1];
         $this->sender_id_code = $elements[2];
         $this->receiver_id_code = $elements[3];
+        $this->gs_id_code = $elements[3];
         $this->date = DateTime::createFromFormat('Ymd', $elements[4]);
         $this->time = DateTime::createFromFormat('Hi', $elements[5]);
         $this->group_control_number = $elements[6];
@@ -72,8 +72,8 @@ class Group
 
         $transaction = [];
         foreach ($this->content as $data) {
-            $isTransactionStart = strlen($data) > 3 && substr($data, 0, 3) == 'ST' . $terms['element_delimiter'];
-            $isTransactionEnd = strlen($data) > 3 && substr($data, 0, 3) == 'SE' . $terms['element_delimiter'];
+            $isTransactionStart = strlen($data) > 3 && substr($data, 0, 3) == 'ST'.$terms['element_delimiter'];
+            $isTransactionEnd = strlen($data) > 3 && substr($data, 0, 3) == 'SE'.$terms['element_delimiter'];
 
             if ($isTransactionStart) {
                 $transaction = [];
@@ -109,7 +109,7 @@ class Group
     public function getOutput(): string
     {
         $output = $this->getOpeningSegment();
-        $output .= join('', $this->getTransactions());
+        $output .= implode('', $this->getTransactions());
 
         return $output.$this->getClosingSegment();
     }
@@ -120,7 +120,7 @@ class Group
         $groupId = str_pad($this->getFunctionalIDCode(), 2, ' ', STR_PAD_LEFT);
 
         $output = 'GS'.$d.$groupId.$d.$this->getSenderIDCode().$d;
-        $output .= $this->getReceiverIDCode().$d;
+        $output .= $this->getGSIDCode().$d;
         $output .= $this->getDate()->format('Ymd').$d.$this->getTime()->format('Hi').$d;
         $output .= $this->getControlNumber().$d;
         $output .= $this->getResponsibleAgencyCode().$d;
@@ -145,13 +145,14 @@ class Group
 
     public function setFields(array $fields)
     {
-        $fields = array_map(function($field) {
+        $fields = array_map(function ($field) {
             return is_string($field) ? trim($field) : $field;
         }, $fields);
 
         $this->functional_id_code = $fields['functional_id_code'];
         $this->sender_id_code = $fields['sender_id_code'];
         $this->receiver_id_code = $fields['receiver_id_code'];
+        $this->gs_id_code = $fields['gs_id_code'] ?? $fields['receiver_id_code'];
         $this->group_control_number = $fields['group_control_number'];
         $this->responsible_agency_code = $fields['responsible_agency_code'];
         $this->version_release_identifier = $fields['version_release_identifier'];
@@ -172,6 +173,19 @@ class Group
     public function getReceiverIDCode(): string
     {
         return $this->receiver_id_code;
+    }
+
+    /**
+     * The GS ID code is typically the same as the company interchange ID
+     * which is the same as the receiver_id_code.
+     *
+     * If the company GS ID is different than the interchange ID,
+     * you may pass it in as key to setFields($fields), otherwise
+     * it will just default to the receiver_id_code.
+     */
+    public function getGSIDCode(): string
+    {
+        return $this->gs_id_code ?? $this->receiver_id_code;
     }
 
     public function getDate(): ?DateTime

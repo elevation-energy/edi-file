@@ -23,7 +23,7 @@ trait Terms
     }
 
     /**
-     * Set the terms by analyzing the ISA header
+     * Set the terms by analyzing the ISA header.
      *
      * According to the standard the ISA should ALWAYS be 106 characters.
      */
@@ -38,7 +38,7 @@ trait Terms
     }
 
     /**
-     * Attempts to determine the terms by analyzing the ISA header
+     * Attempts to determine the terms by analyzing the ISA header.
      */
     private function deriveTerms(string $content): array
     {
