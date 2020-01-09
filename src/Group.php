@@ -29,8 +29,7 @@ class Group
     {
         return (new static($edi))
             ->setContent($content)
-            ->parseContent()
-        ;
+            ->parseContent();
     }
 
     public static function fromContent(EDIFile $edi, string $content): self
@@ -40,8 +39,7 @@ class Group
 
         return (new static($edi))
             ->setContent($content)
-            ->parseContent()
-        ;
+            ->parseContent();
     }
 
     public function parseContent(): self
@@ -74,8 +72,8 @@ class Group
 
         $transaction = [];
         foreach ($this->content as $data) {
-            $isTransactionStart = strlen($data) > 3 && substr($data, 0, 3) == 'ST' . $terms['element_delimiter'];
-            $isTransactionEnd = strlen($data) > 3 && substr($data, 0, 3) == 'SE' . $terms['element_delimiter'];
+            $isTransactionStart = strlen($data) > 3 && substr($data, 0, 3) == 'ST'.$terms['element_delimiter'];
+            $isTransactionEnd = strlen($data) > 3 && substr($data, 0, 3) == 'SE'.$terms['element_delimiter'];
 
             if ($isTransactionStart) {
                 $transaction = [];
@@ -111,7 +109,7 @@ class Group
     public function getOutput(): string
     {
         $output = $this->getOpeningSegment();
-        $output .= join('', $this->getTransactions());
+        $output .= implode('', $this->getTransactions());
 
         return $output.$this->getClosingSegment();
     }
@@ -147,7 +145,7 @@ class Group
 
     public function setFields(array $fields)
     {
-        $fields = array_map(function($field) {
+        $fields = array_map(function ($field) {
             return is_string($field) ? trim($field) : $field;
         }, $fields);
 
