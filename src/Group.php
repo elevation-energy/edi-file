@@ -13,7 +13,7 @@ class Group
     private $functional_id_code = '';
     private $sender_id_code = '';
     private $receiver_id_code = '';
-    private $gs_id_code;
+    private $receiver_gs_id_code;
     private $group_control_number = '';
     private $responsible_agency_code = '';
     private $version_release_identifier = '';
@@ -57,7 +57,7 @@ class Group
         $this->functional_id_code = $elements[1];
         $this->sender_id_code = $elements[2];
         $this->receiver_id_code = $elements[3];
-        $this->gs_id_code = $elements[3];
+        $this->receiver_gs_id_code = $elements[3];
         $this->date = DateTime::createFromFormat('Ymd', $elements[4]);
         $this->time = DateTime::createFromFormat('Hi', $elements[5]);
         $this->group_control_number = $elements[6];
@@ -120,7 +120,7 @@ class Group
         $groupId = str_pad($this->getFunctionalIDCode(), 2, ' ', STR_PAD_LEFT);
 
         $output = 'GS'.$d.$groupId.$d.$this->getSenderIDCode().$d;
-        $output .= $this->getGSIDCode().$d;
+        $output .= $this->getReceiverGSIDCode().$d;
         $output .= $this->getDate()->format('Ymd').$d.$this->getTime()->format('Hi').$d;
         $output .= $this->getControlNumber().$d;
         $output .= $this->getResponsibleAgencyCode().$d;
@@ -152,7 +152,7 @@ class Group
         $this->functional_id_code = $fields['functional_id_code'];
         $this->sender_id_code = $fields['sender_id_code'];
         $this->receiver_id_code = $fields['receiver_id_code'];
-        $this->gs_id_code = $fields['gs_id_code'] ?? $fields['receiver_id_code'];
+        $this->receiver_gs_id_code = $fields['receiver_gs_id_code'] ?? $fields['receiver_id_code'];
         $this->group_control_number = $fields['group_control_number'];
         $this->responsible_agency_code = $fields['responsible_agency_code'];
         $this->version_release_identifier = $fields['version_release_identifier'];
@@ -176,16 +176,16 @@ class Group
     }
 
     /**
-     * The GS ID code is typically the same as the company interchange ID
+     * The receiver_gs_id_code is typically the same as the company interchange ID
      * which is the same as the receiver_id_code.
      *
      * If the company GS ID is different than the interchange ID,
      * you may pass it in as key to setFields($fields), otherwise
      * it will just default to the receiver_id_code.
      */
-    public function getGSIDCode(): string
+    public function getReceiverGSIDCode(): string
     {
-        return $this->gs_id_code ?? $this->receiver_id_code;
+        return $this->receiver_gs_id_code ?? $this->receiver_id_code;
     }
 
     public function getDate(): ?DateTime
