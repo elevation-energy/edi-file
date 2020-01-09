@@ -24,23 +24,23 @@ class EDIFile
     use Terms;
 
     /**
-     * @var array $params[
-     *      'auth_info_qualifier'                => '',
-     *      'auth_info'                          => '',
-     *      'sec_info_qualifier'                 => '',
-     *      'sec_info'                           => '',
-     *      'interchange_sender_id_qualifier'    => '',
-     *      'interchange_sender_id'              => '',
-     *      'interchange_receiver_id_qualifier'  => '',
-     *      'interchange_receiver_id'            => '',
-     *      'date'                               => '',
-     *      'time'                               => '',
-     *      'repetition_separator'               => '',
-     *      'interchange_control_version_number' => '',
-     *      'interchange_control_number'         => '',
-     *      'ack_requested'                      => '',
-     *      'usage_indicator'                    => '',
-     * ]
+     * @var array[
+     *             'auth_info_qualifier'                => '',
+     *             'auth_info'                          => '',
+     *             'sec_info_qualifier'                 => '',
+     *             'sec_info'                           => '',
+     *             'interchange_sender_id_qualifier'    => '',
+     *             'interchange_sender_id'              => '',
+     *             'interchange_receiver_id_qualifier'  => '',
+     *             'interchange_receiver_id'            => '',
+     *             'date'                               => '',
+     *             'time'                               => '',
+     *             'repetition_separator'               => '',
+     *             'interchange_control_version_number' => '',
+     *             'interchange_control_number'         => '',
+     *             'ack_requested'                      => '',
+     *             'usage_indicator'                    => '',
+     *             ]
      */
     public function __construct(array $params = [])
     {
@@ -48,9 +48,9 @@ class EDIFile
         $this->iea = new IEA($this);
     }
 
-    public static function fromContent(string $content): EDIFile
+    public static function fromContent(string $content): self
     {
-        return (new static)
+        return (new static())
             ->setContent($content)
             ->processContent();
     }
@@ -66,7 +66,7 @@ class EDIFile
     }
 
     /**
-     * Builds segment arrays from the content and the segment terminator
+     * Builds segment arrays from the content and the segment terminator.
      */
     public function parseSegments(): array
     {
@@ -85,8 +85,8 @@ class EDIFile
 
         $group = [];
         foreach ($this->segments as $segment) {
-            $isGroupStart = strlen($segment) > 3 && substr($segment, 0, 3) == 'GS' . $this->element_delimiter;
-            $isGroupEnd = strlen($segment) > 3 && substr($segment, 0, 3) == 'GE' . $this->element_delimiter;
+            $isGroupStart = strlen($segment) > 3 && substr($segment, 0, 3) == 'GS'.$this->element_delimiter;
+            $isGroupEnd = strlen($segment) > 3 && substr($segment, 0, 3) == 'GE'.$this->element_delimiter;
 
             if ($isGroupStart) {
                 $group = [];
@@ -105,7 +105,7 @@ class EDIFile
     }
 
     /**
-     * Returns the EDI Type (814, 997, etc)
+     * Returns the EDI Type (814, 997, etc).
      *
      * The type cannot be determined until the EDI has at least
      * one transaction (ST segment). Every ST segment should have
@@ -129,7 +129,7 @@ class EDIFile
 
     public function getTransactions(): array
     {
-        $transactions = array_map(function($group) {
+        $transactions = array_map(function ($group) {
             return $group->getTransactions();
         }, $this->getGroups());
 
@@ -204,9 +204,11 @@ class EDIFile
         $output = '';
         $sections = [$this->preamble, $this->isa, $this->groups, $this->iea];
 
-        foreach($sections as $section) {
-            if (empty($section)) continue;
-            $output .= is_array($section) ? join('', $section) : $section;
+        foreach ($sections as $section) {
+            if (empty($section)) {
+                continue;
+            }
+            $output .= is_array($section) ? implode('', $section) : $section;
         }
 
         return $output;

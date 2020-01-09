@@ -25,8 +25,7 @@ class Transaction
     {
         return (new static($group))
             ->setContent($content)
-            ->parseContent()
-        ;
+            ->parseContent();
     }
 
     public function parseContent(): self
@@ -107,7 +106,7 @@ class Transaction
 
     /**
      * @param string $identifierCode The type 814, 867, etc.
-     * @param string $controlNumber The transaction number, usually starts at 0001 and increments
+     * @param string $controlNumber  The transaction number, usually starts at 0001 and increments
      */
     public function setFields(string $identifierCode, string $controlNumber): void
     {
@@ -136,14 +135,16 @@ class Transaction
      * [
      *     ['BGN' => [data]]
      *     ['N1'  => [data]]
-     * ]
+     * ].
      *
-     * @param array|callable  $segments
-     * @param bool            $condition  Skips adding the transactions when false
+     * @param array|callable $segments
+     * @param bool           $condition Skips adding the transactions when false
      */
     public function addSegments($segments, ?bool $condition = true): void
     {
-        if (false === $condition) return;
+        if (false === $condition) {
+            return;
+        }
 
         $segs = is_callable($segments) ? $segments() : $segments;
 
@@ -186,10 +187,10 @@ class Transaction
      */
     public function getReferenceNumber(?string $append = 'LIN'): string
     {
-        return join('', [
+        return implode('', [
             $this->getGroupControlNumber(),
             $this->getControlNumber(),
-            $append
+            $append,
         ]);
     }
 

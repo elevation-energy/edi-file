@@ -18,8 +18,7 @@ class Segment
     {
         return (new static($transaction))
             ->setContent($content)
-            ->parseContent()
-        ;
+            ->parseContent();
     }
 
     public function getTerm(string $term): string
@@ -48,7 +47,7 @@ class Segment
         $delim = $this->getTerm('element_delimiter');
 
         $output = $this->getIdentifier().$delim;
-        $output .= join($delim, $this->getData());
+        $output .= implode($delim, $this->getData());
 
         $output = rtrim($output, $delim);
         $output = rtrim($output, $this->getTerm('segment_terminator'));
