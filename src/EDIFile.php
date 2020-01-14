@@ -85,8 +85,8 @@ class EDIFile
 
         $group = [];
         foreach ($this->segments as $segment) {
-            $isGroupStart = strlen($segment) > 3 && substr($segment, 0, 3) == 'GS'.$this->element_delimiter;
-            $isGroupEnd = strlen($segment) > 3 && substr($segment, 0, 3) == 'GE'.$this->element_delimiter;
+            $isGroupStart = strlen($segment) > 3 && substr($segment, 0, 3) == 'GS' . $this->element_delimiter;
+            $isGroupEnd = strlen($segment) > 3 && substr($segment, 0, 3) == 'GE' . $this->element_delimiter;
 
             if ($isGroupStart) {
                 $group = [];
@@ -219,7 +219,14 @@ class EDIFile
         $output = $this->getOutput();
         $terminator = $this->getTerm('segment_terminator');
 
-        return str_replace($terminator, $terminator.PHP_EOL, $output);
+        return str_replace($terminator, $terminator . PHP_EOL, $output);
+    }
+
+    public function filename(?string $suffix = null): string
+    {
+        $suffix = $suffix ?? time();
+
+        return $this->getType() . '_' . $this->getInterchangeControlNumber() . '_' . $suffix . '.x12';
     }
 
     public function __toString(): string

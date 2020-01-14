@@ -127,6 +127,16 @@ X12;
     }
 
     /** @test */
+    public function it_generates_a_reasonable_filename()
+    {
+        $edi = $this->beConstructedFromContent();
+
+        $filename = $edi->filename('timestamp-here');
+
+        $this->assertEquals('814_001219885_timestamp-here.x12', $filename);
+    }
+
+    /** @test */
     public function it_returns_a_single_line_at_index()
     {
         $edi = $this->beConstructedFromContent();
