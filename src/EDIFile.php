@@ -127,6 +127,15 @@ class EDIFile
         return $transactions[0]->getEdiType();
     }
 
+    public function getTransaction(string $controlNumber): ?Transaction
+    {
+        foreach ($this->getTransactions() as $transaction) {
+            if ($controlNumber == $transaction->getControlNumber()) {
+                return $transaction;
+            }
+        }
+    }
+
     public function getTransactions(): array
     {
         $transactions = array_map(function ($group) {
