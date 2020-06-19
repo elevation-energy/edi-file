@@ -64,6 +64,11 @@ class ISA
         return $this->interchange_sender_id;
     }
 
+    public function getInterchangeReceiverID(): string
+    {
+        return $this->interchange_receiver_id;
+    }
+
     public function getInterchangeControlNumber(): string
     {
         return $this->interchange_control_number;
