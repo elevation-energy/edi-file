@@ -46,6 +46,10 @@ trait Terms
         $endOfLineIsSegmentTerminator = strlen($pieces[0]) == 105;
         $terminator = $endOfLineIsSegmentTerminator ? PHP_EOL : substr($content, 105, 1);
 
+        if ($endOfLineIsSegmentTerminator && substr($pieces[0], 104, 105) == '\\') {
+            $pieces[0] = substr($pieces[0], 0, -1);
+        }
+
         return [
             'element_delimiter'     => substr($content, 103, 1),
             'sub_element_separator' => substr($content, 104, 1),
