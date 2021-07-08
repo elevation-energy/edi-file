@@ -3,7 +3,6 @@
 namespace Elevation\EDIFile;
 
 use DateTime;
-
 class Group
 {
     private $edi;
@@ -193,9 +192,9 @@ class Group
         return $this->date;
     }
 
-    public function getTime(): ?DateTime
+    public function getTime(): DateTime
     {
-        return $this->time;
+        return is_bool($this->time) ? new DateTime() : $this->time;
     }
 
     public function getControlNumber(): string
