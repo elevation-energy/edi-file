@@ -3,6 +3,7 @@
 namespace Elevation\EDIFile;
 
 use DateTime;
+
 class Group
 {
     private $edi;
