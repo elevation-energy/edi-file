@@ -131,7 +131,7 @@ class ISA
 
         $isaControl = $fields['interchange_control_number'];
 
-        $fields['interchange_control_number'] = str_pad($isaControl, 9, '0', STR_PAD_LEFT);
+        $fields['interchange_control_number'] = str_pad((string) $isaControl, 9, '0', STR_PAD_LEFT);
         $fields['date'] = $this->formatDate($fields['date']);
         $fields['time'] = $this->formatTime($fields['time']);
 
